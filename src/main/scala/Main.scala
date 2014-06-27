@@ -6,8 +6,20 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror
 
 class JsActor(jsFile: String) extends Actor {
   val factory = new ScriptEngineManager()
-  val engine = factory.getEngineByMimeType("text/javascript")
-  engine.eval(new FileReader(jsFile))
+  val engine = factory.getEngineByMimeType("nashorn")
+
+  val reader = new FileReader(jsFile)
+
+  println(engine)
+
+  try {
+    engine.eval(reader)
+  } catch {
+    case e:Exception => {
+      e.printStackTrace
+      println(s"exception ${e.getStackTrace}")
+    }
+  }
 
   val receiveFn: ScriptObjectMirror = engine.get("receive").asInstanceOf[ScriptObjectMirror]
 
